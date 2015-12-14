@@ -1,0 +1,43 @@
+{
+    "name": "litgroup/sms-bundle",
+    "description": "Symfony bundle for short messaging library.",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "LitGroup Team",
+            "email": "developers@litgroup.ru"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "LitGroup\\SmsBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\LitGroup\\SmsBundle\\": "tests/"
+        }
+    },
+    "require": {
+        "php": "~5.5|~7.0",
+        "litgroup/sms": "^0.2.0",
+        "symfony/framework-bundle": "~3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.8@stable"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    },
+    "archive": {
+        "exclude": [
+            "/tests",
+            "/phpunit.xml.dist",
+            "/.travis.yml",
+            ".gitignore"
+        ]
+    }
+}

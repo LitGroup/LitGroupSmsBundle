@@ -27,4 +27,20 @@ class LitGroupSmsExtension extends Extension
     {
         // TODO: Implement load() method.
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getConfiguration(array $config, ContainerBuilder $container)
+    {
+        return new Configuration($container->getParameter('kernel.debug'));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAlias()
+    {
+        return 'litgroup_sms';
+    }
 }

@@ -1,0 +1,78 @@
+{% extends '@WebProfiler/Profiler/layout.html.twig' %}
+
+{% block toolbar %}
+    {% set icon %}
+        {# this is the content displayed as a panel in the toolbar #}
+        <span class="icon">{{ include('@LitGroupSms/Collector/icon.svg') }}</span>
+        <span class="sf-toolbar-value">{{ collector.messageCount }}</span>
+    {% endset %}
+
+    {% set text %}
+        {# this is the content displayed when hovering the mouse over
+           the toolbar panel #}
+        <div class="sf-toolbar-info-piece">
+            <b>Sent messages</b>
+            <span class="sf-toolbar-status">{{ collector.messageCount }}</span>
+        </div>
+    {% endset %}
+
+    {# the 'link' value set to 'false' means that this panel doesn't
+       show a section in the web profiler (default is 'true'). #}
+    {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { link: true }) }}
+{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+    {# Optional. Here you can link to or define your own CSS and JS contents. #}
+    {# Use {{ parent() }} to extend the default styles instead of overriding them. #}
+{% endblock %}
+
+{% block menu %}
+    {# This left-hand menu appears when using the full-screen profiler. #}
+    <span class="label {{ collector.messageCount ? '' : 'disabled' }}">
+        <span class="icon">{{ include('@LitGroupSms/Collector/icon.svg') }}</span>
+        <strong>SMS</strong>
+        {% if collector.messageCount > 0 %}
+            <span class="count">
+                <span>{{ collector.messageCount }}</span>
+            </span>
+        {% endif %}
+    </span>
+{% endblock %}
+
+{% block panel %}
+    {# Optional, for showing the most details. #}
+    <h2>Short messages</h2>
+
+    {% if not collector.messages %}
+        <div class="empty">
+            <p>No short messages were sent.</p>
+        </div>
+    {% endif %}
+
+    {% if collector.messageCount > 0 %}
+        <table>
+            <thead>
+            <tr>
+                <th>Sender</th>
+                <th>Recipient(s)</th>
+                <th>Message body</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for message in collector.messages %}
+                <tr>
+                    <td>{{ message.sender|default('-') }}</td>
+                    <td>
+                        {% for recipient in message.recipients %}
+                            {% if not loop.first %}<br>{% endif %}
+                            {{ recipient }}
+                        {% endfor %}
+                    </td>
+                    <td>{{ message.body }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}

@@ -29,12 +29,6 @@ class MessageDataCollector extends DataCollector
     private $logger;
 
     /**
-     * @var Message[]
-     */
-    private $messages;
-
-
-    /**
      * MessageDataCollector constructor.
      *
      * @param MessageLogger $logger
@@ -46,7 +40,7 @@ class MessageDataCollector extends DataCollector
 
     public function collect(Request $request, Response $response, \Exception $exception = null)
     {
-        $this->messages = $this->logger->getMessages();
+        $this->data = $this->logger->getMessages();
     }
 
     /**
@@ -54,7 +48,7 @@ class MessageDataCollector extends DataCollector
      */
     public function getMessages()
     {
-        return $this->messages;
+        return $this->data;
     }
 
     /**
@@ -62,7 +56,7 @@ class MessageDataCollector extends DataCollector
      */
     public function getMessageCount()
     {
-        return count($this->messages);
+        return count($this->data);
     }
 
     /**

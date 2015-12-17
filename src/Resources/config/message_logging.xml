@@ -12,13 +12,13 @@
     <services>
 
         <!-- Message logger -->
-        <service id="litgroup_sms.message_logger" class="%litgroup_sms.message_logger.class%" public="false" />
+        <service id="litgroup_sms.message_logger" class="%litgroup_sms.message_logger.class%" public="false"/>
 
         <!-- Message data collector -->
         <service id="litgroup_sms.data_collector" class="%litgroup_sms.data_collector.class%" public="false">
             <argument type="service" id="litgroup_sms.message_logger"/>
 
-            <tag name="data_collector"/>
+            <tag name="data_collector" template="@LitGroupSms/Collector/sms.html.twig" id="litgroup_sms" />
         </service>
 
     </services>

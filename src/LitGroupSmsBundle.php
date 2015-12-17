@@ -13,7 +13,7 @@ namespace LitGroup\SmsBundle;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
- * Class LitGroupSmsBundle
+ * LitGroupSmsBundle.
  *
  * @author Roman Shamritskiy <roman@litgroup.ru>
  */

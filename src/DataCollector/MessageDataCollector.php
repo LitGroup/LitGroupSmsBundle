@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the "litgroup/sms" package.
+ * This file is part of the "LitGroupSmsBundle" package.
  *
  * (c) LitGroup <http://litgroup.ru/>
  *
@@ -10,7 +10,8 @@
 
 namespace LitGroup\SmsBundle\DataCollector;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use LitGroup\Sms\Logger\MessageLogger;
+use LitGroup\Sms\Message;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
@@ -23,27 +24,45 @@ use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 class MessageDataCollector extends DataCollector
 {
     /**
-     * @var ContainerInterface
+     * @var MessageLogger
      */
-    private $container;
+    private $logger;
+
+    /**
+     * @var Message[]
+     */
+    private $messages;
 
 
     /**
      * MessageDataCollector constructor.
      *
-     * We don't inject the message logger and message service here
-     * to avoid the creation of these objects when no emails are sent.
-     *
-     * @param ContainerInterface $container
+     * @param MessageLogger $logger
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(MessageLogger $logger)
     {
-        $this->container = $container;
+        $this->logger = $logger;
     }
 
     public function collect(Request $request, Response $response, \Exception $exception = null)
     {
-        // TODO: Implement collect() method.
+        $this->messages = $this->logger->getMessages();
+    }
+
+    /**
+     * @return Message[]
+     */
+    public function getMessages()
+    {
+        return $this->messages;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getMessageCount()
+    {
+        return count($this->messages);
     }
 
     /**
@@ -53,5 +72,4 @@ class MessageDataCollector extends DataCollector
     {
         return 'litgroup_sms';
     }
-
 }

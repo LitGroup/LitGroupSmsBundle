@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd"
+>
+    <parameters>
+        <parameter key="litgroup_sms.message_logger.class">LitGroup\Sms\Logger\MessageLogger</parameter>
+        <parameter key="litgroup_sms.data_collector.class">LitGroup\SmsBundle\DataCollector\MessageDataCollector</parameter>
+    </parameters>
+
+    <services>
+
+        <!-- Message logger -->
+        <service id="litgroup_sms.message_logger" class="%litgroup_sms.message_logger.class%" public="false" />
+
+        <!-- Message data collector -->
+        <service id="litgroup_sms.data_collector" class="%litgroup_sms.data_collector.class%" public="false">
+            <argument type="service" id="litgroup_sms.message_logger"/>
+
+            <tag name="data_collector"/>
+        </service>
+
+    </services>
+</container>

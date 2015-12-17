@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the "litgroup/sms" package.
+ * This file is part of the "LitGroupSmsBundle" package.
  *
  * (c) LitGroup <http://litgroup.ru/>
  *
@@ -52,7 +52,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
         $processedConfig = $processor->processConfiguration($configuration, [self::$minimalConfig]);
         $this->assertFalse($processedConfig['disable_delivery']);
-        $this->assertSame($debug, $processedConfig['logging']);
+        $this->assertSame($debug, $processedConfig['message_logging']);
     }
 
     public function getLoggingConfigTests()
@@ -70,7 +70,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     public function testLoggingConfig($confValue, $expected)
     {
         $config = array_merge(
-            ['logging' => $confValue],
+            ['message_logging' => $confValue],
             self::$minimalConfig
         );
 
@@ -78,7 +78,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $processor = new Processor();
 
         $processedConfig = $processor->processConfiguration($configuration, [$config]);
-        $this->assertSame($expected, $processedConfig['logging']);
+        $this->assertSame($expected, $processedConfig['message_logging']);
     }
 
     public function getDisableDeliveryConfigTests()
@@ -127,14 +127,39 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('app.sms_gateway_2', $processedConfig['gateways']['gw2']['id']);
     }
 
-    public function testGatewayParams()
+    public function getGatewayParamsTests()
+    {
+        return [
+            /* SMSc */
+            [
+                [
+                    'type' => 'smsc',
+                    'user' => 'smscuser',
+                    'password' => 'topsecret',
+                    'connect_timeout' => 10.0,
+                    'timeout' => 20.0
+                ]
+            ],
+            [
+                [
+                    'type' => 'mock_sms',
+                    'host' => 'example.com',
+                    'port' => 9999,
+                    'connect_timeout' => 10.0,
+                    'timeout' => 20.0
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider getGatewayParamsTests
+     */
+    public function testGatewayParams($params)
     {
         $config = [
             'gateways' => [
-                'default' => [
-                    'user' => 'username',
-                    'password' => 'pa$$word',
-                ]
+                'default' => $params,
             ]
         ];
 
@@ -143,8 +168,42 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
         $processedConfig = $processor->processConfiguration($configuration, [$config]);
         $this->assertCount(1, $processedConfig['gateways']);
-        $this->assertCount(2, $processedConfig['gateways']['default']);
-        $this->assertSame('username', $processedConfig['gateways']['default']['user']);
-        $this->assertSame('pa$$word', $processedConfig['gateways']['default']['password']);
+        $this->assertCount(count($params), $processedConfig['gateways']['default']);
+        $this->assertEquals($params, $processedConfig['gateways']['default']);
+    }
+
+    public function testGatewaysNoDeepMerge()
+    {
+        $configs =[
+            [
+                'gateways' => [
+                    'gw1' => [
+                        'type' => 'smsc',
+                        'user' => 'Use1r',
+                        'password' => 'Password1'
+                    ]
+                ]
+            ],
+            [
+                'gateways' => [
+                    'gw2' => [
+                        'type' => 'mock_sms',
+                        'host' => 'example.com',
+                        'port' => 6666,
+                    ]
+                ]
+            ]
+        ];
+
+        $configuration = new Configuration(false);
+        $processor = new Processor();
+
+        $processedConfig = $processor->processConfiguration($configuration, $configs);
+        $this->assertCount(1, $processedConfig['gateways']);
+        $this->assertArrayHasKey('gw2', $processedConfig['gateways']);
+
+        $this->assertSame('mock_sms', $processedConfig['gateways']['gw2']['type']);
+        $this->assertSame('example.com', $processedConfig['gateways']['gw2']['host']);
+        $this->assertSame(6666, $processedConfig['gateways']['gw2']['port']);
     }
 }

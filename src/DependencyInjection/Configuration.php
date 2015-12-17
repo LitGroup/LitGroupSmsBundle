@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the "litgroup/sms" package.
+ * This file is part of the "LitGroupSmsBundle" package.
  *
  * (c) LitGroup <http://litgroup.ru/>
  *
@@ -46,12 +46,6 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->fixXmlConfig('gateway')
             ->children()
-                ->booleanNode('logging')
-                    ->defaultValue($this->debug)
-                ->end()
-                ->booleanNode('disable_delivery')
-                    ->defaultFalse()
-                ->end()
                 ->arrayNode('gateways')
                     ->isRequired()
                     ->performNoDeepMerging()
@@ -65,12 +59,29 @@ class Configuration implements ConfigurationInterface
                         ->children()
                             ->scalarNode('id')->end()
                             ->enumNode('type')
-                                ->values(['smsc', 'null_gateway'])
+                                ->values(['smsc', 'mock_sms'])
                             ->end()
                             ->scalarNode('user')->end()
                             ->scalarNode('password')->end()
+                            ->scalarNode('host')->end()
+                            ->scalarNode('port')->end()
+                            ->floatNode('connect_timeout')
+                                ->defaultValue(0.0)
+                                ->treatNullLike(0.0)
+                            ->end()
+                            ->floatNode('timeout')
+                                ->defaultValue(0.0)
+                                ->treatNullLike(0.0)
+                            ->end()
                         ->end()
                     ->end()
+                ->end()
+                ->booleanNode('message_logging')
+                    ->defaultValue($this->debug)
+                    ->info('By default enabled in debug mode.')
+                ->end()
+                    ->booleanNode('disable_delivery')
+                    ->defaultFalse()
                 ->end()
             ->end()
         ;

@@ -179,7 +179,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                 'gateways' => [
                     'gw1' => [
                         'type' => 'smsc',
-                        'user' => 'Use1r',
+                        'user' => 'User1',
                         'password' => 'Password1'
                     ]
                 ]
